@@ -1,0 +1,51 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import TagList from './TagList.astro';
+
+interface Props {
+  project: CollectionEntry<'projects'>;
+}
+const { project } = Astro.props;
+const { title, summary, year, stack } = project.data;
+---
+
+<li class="row">
+  <a href={`/projects/${project.id}/`}>
+    <div class="top">
+      <h3>{title}</h3>
+      <span class="mono">{year}</span>
+    </div>
+    <p class="muted">{summary}</p>
+    <TagList tags={stack} />
+  </a>
+</li>
+
+<style>
+  .row {
+    border-top: 1px solid var(--border);
+  }
+  .row:last-child {
+    border-bottom: 1px solid var(--border);
+  }
+  a {
+    display: block;
+    padding-block: var(--s3);
+  }
+  .top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--s2);
+  }
+  h3 {
+    font-size: 19px;
+    transition: color 0.15s;
+  }
+  a:hover h3 {
+    color: var(--accent);
+  }
+  p {
+    margin: 4px 0 var(--s2);
+    font-size: 16px;
+  }
+</style>

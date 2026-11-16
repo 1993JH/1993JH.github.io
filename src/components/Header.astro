@@ -1,0 +1,76 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+import { site } from '../site';
+
+const links = [
+  { href: '/projects/', label: 'Projects' },
+  { href: '/about/', label: 'About' },
+  { href: '/about/#contact', label: 'Contact' },
+];
+const path = Astro.url.pathname;
+---
+
+<header class="container wide">
+  <a href="/" class="name">{site.name}</a>
+  <nav aria-label="Main">
+    <ul>
+      {
+        links.map((l) => (
+          <li class={l.label === 'Contact' ? 'contact' : undefined}>
+            <a href={l.href} aria-current={path.startsWith(l.href) && !l.href.includes('#') ? 'page' : undefined}>
+              {l.label}
+            </a>
+          </li>
+        ))
+      }
+      <li><ThemeToggle /></li>
+    </ul>
+  </nav>
+</header>
+
+<style>
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--s2);
+    padding-block: var(--s3);
+  }
+  .name {
+    white-space: nowrap;
+    font-weight: 600;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+  }
+  ul {
+    display: flex;
+    align-items: center;
+    gap: var(--s3);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  nav a {
+    font-size: 15px;
+    color: var(--text-2);
+    transition: color 0.15s;
+  }
+  nav a:hover,
+  nav a[aria-current='page'] {
+    color: var(--text);
+  }
+  @media (max-width: 640px) {
+    ul {
+      gap: var(--s2);
+    }
+  }
+  @media (max-width: 480px) {
+    /* Contact stays reachable via the footer and the About page */
+    .contact {
+      display: none;
+    }
+    nav a {
+      font-size: 14px;
+    }
+  }
+</style>

@@ -1,0 +1,63 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { site } from '../site';
+
+const featured = (await getCollection('projects', (p) => p.data.featured))
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 4);
+---
+
+<Base>
+  <section class="hero container reveal">
+    <p class="eyebrow">{site.role} — {site.location}</p>
+    <h1>{site.headline}</h1>
+    <p class="intro muted">{site.intro}</p>
+  </section>
+
+  <section class="container work reveal" aria-labelledby="work-heading" style="animation-delay: 0.1s">
+    <div class="head">
+      <h2 id="work-heading" class="mono">Selected work</h2>
+      <a class="link" href="/projects/">All projects →</a>
+    </div>
+    <ul class="list">
+      {featured.map((p) => <ProjectCard project={p} />)}
+    </ul>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    padding-block: var(--s12) var(--s8);
+  }
+  h1 {
+    font-size: clamp(36px, 7vw, 56px);
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+    max-width: 16ch;
+    margin-bottom: var(--s3);
+  }
+  .intro {
+    font-size: 19px;
+    max-width: 46ch;
+  }
+  .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: var(--s1);
+  }
+  h2.mono {
+    font-weight: 400;
+    letter-spacing: 0;
+  }
+  .head a {
+    font-size: 15px;
+  }
+  .list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+</style>

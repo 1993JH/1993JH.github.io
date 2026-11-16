@@ -1,0 +1,37 @@
+---
+import { site } from '../site';
+const year = new Date().getFullYear();
+---
+
+<footer class="container wide">
+  <span class="mono">© {year} {site.name}</span>
+  <ul>
+    <li><a href={`mailto:${site.email}`}>Email</a></li>
+    {site.socials.map((s) => <li><a href={s.href} rel="me noopener">{s.label}</a></li>)}
+  </ul>
+</footer>
+
+<style>
+  footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--s2);
+    padding-block: var(--s8) var(--s4);
+  }
+  ul {
+    display: flex;
+    gap: var(--s3);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  a {
+    font-size: 15px;
+    color: var(--text-2);
+  }
+  a:hover {
+    color: var(--text);
+  }
+</style>

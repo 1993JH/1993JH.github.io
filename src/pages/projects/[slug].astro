@@ -1,0 +1,103 @@
+---
+import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import TagList from '../../components/TagList.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+}
+
+const { project } = Astro.props;
+const { title, summary, year, role, timeline, stack, cover, coverAlt, live, repo } = project.data;
+const { Content } = await render(project);
+---
+
+<Base title={title} description={summary} image={cover?.src}>
+  <article class="container reveal">
+    <a href="/projects/" class="back mono">← All projects</a>
+    <header>
+      <h1>{title}</h1>
+      <p class="muted lede">{summary}</p>
+    </header>
+
+    <dl class="meta">
+      <div><dt class="mono">Role</dt><dd>{role}</dd></div>
+      <div><dt class="mono">Year</dt><dd>{year}</dd></div>
+      {timeline && <div><dt class="mono">Timeline</dt><dd>{timeline}</dd></div>}
+      {
+        (live || repo) && (
+          <div>
+            <dt class="mono">Links</dt>
+            <dd class="links">
+              {live && <a class="link" href={live}>Live site ↗</a>}
+              {repo && <a class="link" href={repo}>Source ↗</a>}
+            </dd>
+          </div>
+        )
+      }
+      <div class="stack"><dt class="mono">Stack</dt><dd><TagList tags={stack} /></dd></div>
+    </dl>
+
+    {
+      cover && (
+        <Image src={cover} alt={coverAlt ?? ''} class="cover" widths={[720, 1440]} sizes="(max-width: 768px) 100vw, 720px" />
+      )
+    }
+
+    <div class="prose">
+      <Content />
+    </div>
+  </article>
+</Base>
+
+<style>
+  article {
+    padding-top: var(--s6);
+  }
+  .back {
+    display: inline-block;
+    margin-bottom: var(--s6);
+  }
+  .back:hover {
+    color: var(--text);
+  }
+  h1 {
+    font-size: clamp(32px, 6vw, 48px);
+    letter-spacing: -0.03em;
+    margin-bottom: var(--s2);
+  }
+  .lede {
+    font-size: 19px;
+    max-width: 52ch;
+  }
+  .meta {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: var(--s3);
+    margin: var(--s6) 0;
+    padding-block: var(--s3);
+    border-block: 1px solid var(--border);
+  }
+  .meta .stack {
+    grid-column: 1 / -1;
+  }
+  dt {
+    margin-bottom: 4px;
+  }
+  dd {
+    margin: 0;
+    font-size: 16px;
+  }
+  .links {
+    display: flex;
+    flex-direction: column;
+  }
+  .cover {
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: var(--s6);
+    background: var(--surface);
+  }
+</style>
